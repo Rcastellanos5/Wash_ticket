@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/user";
 import { hashPassword } from "../util/auth";
 import { generateToken } from "../util/token";
+import { AuthEmail } from "../emails/AuthEmail";
 export class AuthController{
     static createAccount=async(req:Request, res:Response)=>{
        //Evitar duplicados 
@@ -20,8 +21,18 @@ export class AuthController{
             const user= new User (req.body)
             //Se trae la contraseña y la mandamos a la funcion de hashpasword
             user.password= await hashPassword(password)
-            user.token=generateToken()            //Se guarda en la base de datos 
+           
+            //Llamamos la funcion que crea el token 
+            user.token=generateToken()   
+            //Se guarda en la base de datos 
             await user.save()
+            
+            AuthEmail.senfConfirmatioEmail({
+                name:user.name,
+                email:user.email,
+                token:user.token
+            })
+
             //Mensaje de confirmacion 
             res.json("Cuenta creada correctamente ")
 
