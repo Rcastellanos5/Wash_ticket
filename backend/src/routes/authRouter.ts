@@ -4,6 +4,7 @@ import { AuthController } from "../Controllers/authcontroller";
 import { body, param } from "express-validator";
 import { limiter } from "../config/limiter";
 import { authenticate } from "../middleware/auth";
+import { checkPassword } from "../util/auth";
 const router=Router()
 //Aplica el limitador de peticiones
 router.use(limiter)
@@ -84,5 +85,15 @@ router.post("/update-password",
     AuthController.updateCurrentUserPassword
 
 )
+router.post("/check-password",
+    authenticate, 
+    body("password")
+    .notEmpty()
+    .withMessage("La contraseña no puede ir vacia"),
+    handleInputErrors, 
+    AuthController.checkPassword
+)
+
+
 
 export default router

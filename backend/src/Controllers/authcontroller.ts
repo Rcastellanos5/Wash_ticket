@@ -162,6 +162,23 @@ export class AuthController{
         //Respuesta del servido 
         res.json("Contraseña actualizada")
     }
+    //Si se necesita autiorizacion para realizar algo en especifico 
+    static checkPassword=async(req:Request, res:Response)=>{
+        const {password}=req.body
+
+        const {id}=req.user
+
+        const user= await User.findByPk(id)
+
+        const isPasswordCorrect =await checkPassword (password, user.password)
+
+        if(!isPasswordCorrect){
+            const error=new Error("Contraseña incorrecta")
+            return res.status(404).json({error:error.message})
+        }
+
+        res.json("Password correcto")
+    }
 
 }
     
