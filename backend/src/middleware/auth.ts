@@ -24,6 +24,7 @@ export const authenticate=async(req:Request, res:Response, next:NextFunction )=>
             const error=new Error("Token no valido")
             return res.status(401).json({error:error.message})
         }
+        
 
         try{
             //Verifica el token con la palabra secreta 
@@ -35,6 +36,7 @@ export const authenticate=async(req:Request, res:Response, next:NextFunction )=>
                 }) 
                 next()
             }
+            
             //Si el token no es valido devuelve un error
         }catch(error){
             res.status(500).json({error:'Token no valido'})
